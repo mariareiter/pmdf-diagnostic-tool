@@ -1,104 +1,113 @@
-# PMDF Diagnostic Tool
+# Persuasion or Manipulation?
 
-Interactive companion app to the BBA Final Thesis:
+### The PMDF Diagnostic Tool
 
-> **"Persuasion or Manipulation? A Diagnostic Framework for Ethical Assessment Across Data-Driven and AI-Enabled Political Marketing"**
-> María Reiter Hernández — IE University — April 2026
+An interactive implementation of the **Persuasion–Manipulation Diagnostic Framework (PMDF)** — a six-dimension instrument for assessing whether a political marketing practice is ethical persuasion, borderline, or manipulation.
 
-This app operationalises the thesis's original contribution, the **Persuasion–Manipulation
-Diagnostic Framework (PMDF)**, as a live diagnostic tool. It evaluates a political marketing
-practice across six ethical dimensions and classifies it as *ethical persuasion*, *borderline*,
-or *manipulation*. The tool is designed as an interactive visual aid for the thesis oral defense
-and as a demonstration layer for the broader PMDF framework.
+> **Live tool** → [https://YOUR-APP.streamlit.app](https://YOUR-APP.streamlit.app)
+>
+> *Replace this link with your actual Streamlit Community Cloud URL after deployment.*
 
-## What the app does
+---
 
-- Presents three pre-loaded cases from the thesis — **Cambridge Analytica / Brexit (2016)**,
-  the **Slovak election deepfake (2023)**, and the **Biden robocall (2024)** — or lets the user
-  build a custom scenario.
-- Walks the user through the six PMDF dimensions: Informed Consent, Transparency of Intent,
-  Respect for Autonomy, Content Authenticity, Targeting Proportionality, and Accountability &
-  Oversight.
-- Updates a radar chart live as the user answers, making the violation-clustering pattern at
-  the heart of Hypothesis 2 visually immediate.
-- Produces a final assessment with the verdict, color-coded dimension summary, literature-backed
-  explanations, and a regulatory coverage table that operationalises Hypothesis 1 (the gap).
+## Why this tool exists
+
+The regulatory response to the Cambridge Analytica scandal focused on one side of the problem: personal data. GDPR, platform-level audit requirements, and post-hoc investigations all target the *collection* of personal information used to target voters. But the most effective manipulation of the AI era often doesn't need personal data at all.
+
+A deepfake of a candidate, a cloned voice used in a robocall, an LLM producing emotionally targeted messaging at scale — these operate on a different layer, and the instruments built in response to 2016 don't reach them.
+
+The PMDF applies the same six-dimension assessment to any practice regardless of its technology, and maps each dimension against the regulatory instruments that currently cover it — making visible where today's frameworks still fall short.
+
+## The six dimensions
+
+| # | Dimension | Core question |
+|---|-----------|---------------|
+| 1 | Informed Consent | Did the person consent to being targeted and to the use of their data? |
+| 2 | Transparency of Intent | Is the persuasive purpose disclosed? |
+| 3 | Respect for Autonomy | Does the practice engage or bypass critical thinking? |
+| 4 | Content Authenticity | Is the content genuine or synthetically produced? |
+| 5 | Targeting Proportionality | Is the targeting granularity proportionate to the goal? |
+| 6 | Accountability & Oversight | Can the source be traced and recourse obtained? |
+
+Each dimension is scored 0–3 from its sub-questions (0 = manipulation, 3 = ethical persuasion). The six dimension averages sum to a total between 0 and 18:
+
+- **0–6** Manipulation
+- **7–12** Borderline
+- **13–18** Ethical persuasion
+
+## Documented cases included
+
+| Case | Year | Paradigm |
+|------|------|----------|
+| Cambridge Analytica / Brexit | 2016 | Data-centric |
+| Slovak election deepfake | 2023 | Content-centric |
+| Biden voice-clone robocall | 2024 | Content-centric |
+
+The tool also lets you build a custom scenario and run it through the framework.
+
+## Regulatory coverage
+
+Every dimension is mapped against the four instruments currently in force:
+
+- **GDPR** — General Data Protection Regulation (EU, 2016)
+- **AI Act** — EU Artificial Intelligence Act (2024)
+- **DSA** — Digital Services Act (EU, 2022)
+- **AMA Code** — American Marketing Association Code of Ethics (2022)
+
+The matrix explicitly highlights **D3 Respect for Autonomy** — a dimension where no current instrument provides meaningful coverage.
 
 ## Run locally
 
-Requires Python 3.11+.
+Requires Python 3.11 or later.
 
 ```bash
-# 1. Clone or unzip the project
-cd pmdf_app
-
-# 2. (optional) create a virtual environment
-python -m venv .venv
-source .venv/bin/activate          # on macOS/Linux
-# .venv\Scripts\activate            # on Windows
-
-# 3. Install dependencies
+git clone https://github.com/YOUR-USERNAME/pmdf-diagnostic-tool.git
+cd pmdf-diagnostic-tool
 pip install -r requirements.txt
-
-# 4. Run
-streamlit run app.py
+python3 -m streamlit run app.py
 ```
 
-The app will open in your browser at `http://localhost:8501`.
+The app opens at `http://localhost:8501`.
 
-## Deploy to Streamlit Community Cloud
+## Stack
 
-1. Push this folder to a public GitHub repository (for example, `pmdf_app`).
-2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
-3. Click **New app**, choose your repo, set the main file to `app.py`, and deploy.
-4. Streamlit will install from `requirements.txt` and apply the theme in `.streamlit/config.toml`
-   automatically.
-
-Community Cloud gives you a persistent public URL you can put on the first slide of the oral
-defense.
+Python 3.11 · Streamlit · Plotly · pandas. Session-based (no database, no authentication). The design system uses a cherry–navy–cream palette; all UI copy is written in product voice.
 
 ## Project structure
 
 ```
-pmdf_app/
-├── app.py                         # Main Streamlit entry point & screen router
-├── requirements.txt               # Python dependencies
+pmdf-diagnostic-tool/
+├── app.py                      # Main Streamlit entry point
+├── requirements.txt
 ├── README.md
 ├── .streamlit/
-│   └── config.toml                # Theme (navy primary, light background)
+│   └── config.toml             # Theme configuration
 ├── data/
-│   ├── __init__.py
-│   ├── dimensions.py              # Six PMDF dimensions + questions + explanations
-│   ├── scenarios.py               # Pre-loaded answer keys (Cambridge, Slovak, Biden)
-│   └── regulations.py             # Regulatory coverage matrix (Section 7)
+│   ├── dimensions.py           # Six PMDF dimensions + questions + explanations
+│   ├── scenarios.py            # Pre-loaded case answer keys
+│   └── regulations.py          # Regulatory coverage matrix
 └── components/
-    ├── __init__.py
-    ├── scoring.py                 # Dimension averaging, verdicts, level colours
-    ├── radar_chart.py             # Plotly radar chart builder
-    └── output.py                  # Screen 3: verdict, summary, coverage table
+    ├── scoring.py              # Dimension averaging, verdict logic
+    ├── radar_chart.py          # Plotly radar chart builder
+    └── output.py               # Assessment output rendering
 ```
 
-## Scoring
+## Academic context
 
-- Each answer maps to a score from **0 (manipulation)** to **3 (ethical persuasion)**.
-- **Dimension score** = average of its sub-question scores (range 0–3).
-- **Total score** = sum of the six dimension averages (range 0–18).
-- **Verdict:** `0–6` Manipulation · `7–12` Borderline · `13–18` Ethical Persuasion.
-- Dimension-level colour: `0–1` red · `1–2` yellow · `>2` green.
+The PMDF was developed as the original contribution of:
 
-## Academic integrity note
+> Reiter Hernández, M. (2026). *Persuasion or Manipulation? A Diagnostic Framework for Ethical Assessment Across Data-Driven and AI-Enabled Political Marketing.* Bachelor in Business Administration, IE University, Madrid.
 
-Every question, score threshold, dimension, explanation, and regulatory verdict traces
-directly to the thesis and its reference list. The app is a demonstration layer — not an
-independent intellectual contribution. Nothing in the app introduces concepts, scoring logic,
-or claims that are not grounded in the thesis itself.
+The framework synthesises three bodies of literature: marketing ethics (Hunt & Vitell, 1986; Susser et al., 2019; Laczniak & Murphy, 2006); the Cambridge Analytica documentary record (DCMS Committee, 2019; ICO, 2020; Wylie, 2019; Kosinski et al., 2013); and emerging AI-manipulation research (Chesney & Citron, 2019; Goldstein et al., 2023; Freedom House, 2024).
 
-## Citations used in the app
+Every threshold, citation, and explanation in this tool traces back to the thesis reference list. The tool is a demonstration layer over the framework — it introduces no theoretical content of its own.
 
-Chesney & Citron (2019) · Cialdini (2001) · DCMS Committee (2019) · European Parliament (2024,
-*EU AI Act*) · Freedom House (2024) · Goldstein et al. (2023) · Hunt & Vitell (1986) · ICO
-(2020) · Kosinski et al. (2013) · Laczniak & Murphy (2006) · Mathur et al. (2019) · Regulation
-(EU) 2016/679 (GDPR) · Susser et al. (2019) · Zuiderveen Borgesius et al. (2018) · AMA Code of
-Ethics (2022) · Digital Services Act (2022)
+## License and use
 
-Full references are in the thesis bibliography.
+Made available for educational and research use.
+
+---
+
+**Author** · María Reiter Hernández
+**Institution** · IE University, Madrid
+**Year** · 2026
